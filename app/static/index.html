@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TriageFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d1117;--panel:#141a22;--line:#243041;--ink:#e6edf3;--mute:#8b98a9;
+--crit:#ff5c5c;--high:#ffb020;--rout:#3fb8a9;--acc:#5aa9ff;--ok:#3fd07a;--bad:#ff5c5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--line)}
+h1{font-size:20px;margin:0;letter-spacing:.3px}h1 b{color:var(--crit)}
+.sub{color:var(--mute);font-size:13px}
+.badges{display:flex;gap:8px;flex-wrap:wrap}.badge{font:12px "IBM Plex Mono",monospace;border:1px solid var(--line);border-radius:20px;padding:3px 10px;color:var(--mute)}
+.badge.on{color:var(--ok);border-color:#24553a}.badge.warn{color:var(--high);border-color:#5a4520}
+main{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:16px;padding:16px 20px;max-width:1500px;margin:auto}
+@media(max-width:900px){main{grid-template-columns:1fr;padding:12px 16px}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px}
+.card h2{font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin:0 0 10px}
+label{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px}
+select,textarea,input[type=file]{width:100%;background:#0b0f14;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px;font:inherit}
+textarea{min-height:96px;resize:vertical}
+button{font:600 14px "IBM Plex Sans",sans-serif;border:0;border-radius:6px;padding:10px 14px;cursor:pointer}
+.primary{background:var(--acc);color:#04111f;width:100%;margin-top:12px}
+.danger{background:transparent;color:var(--crit);border:1px solid var(--crit);width:100%}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.chip{font-size:12px;background:#0b0f14;border:1px solid var(--line);color:var(--mute);padding:4px 8px;border-radius:14px;cursor:pointer}
+.chip:hover{color:var(--ink)}
+.pools{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:700px){.pools{grid-template-columns:repeat(2,1fr)}}
+.pool{border:1px solid var(--line);border-radius:8px;padding:10px;background:#0b0f14}.pool b{display:block;font-size:13px}
+.slots{display:flex;gap:4px;margin:8px 0 4px}.slot{flex:1;height:10px;border-radius:3px;background:#1d2633}.slot.busy{background:var(--acc)}
+.small{font-size:12px;color:var(--mute)}.mono{font-family:"IBM Plex Mono",monospace}
+.jobs{max-height:300px;overflow:auto}.job{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:8px;border-radius:6px;cursor:pointer;border:1px solid transparent}
+.job:hover,.job.sel{border-color:var(--line);background:#0b0f14}
+.pri{font:600 11px "IBM Plex Mono",monospace;padding:2px 6px;border-radius:4px;color:#0b0f14;background:var(--mute)}
+.pri.Critical{background:var(--crit)}.pri.High{background:var(--high)}.pri.Routine{background:var(--rout)}
+.status{font:12px "IBM Plex Mono",monospace;color:var(--mute)}.status.done{color:var(--ok)}.status.failed{color:var(--bad)}
+.timeline{list-style:none;padding:0;margin:0}.timeline li{display:grid;grid-template-columns:52px 120px 1fr;gap:8px;font-size:13px;padding:3px 0;border-bottom:1px dashed #1d2633}
+.timeline .t{color:var(--mute)}.timeline .s{font-family:"IBM Plex Mono",monospace;color:var(--acc)}
+pre{background:#0b0f14;border:1px solid var(--line);border-radius:6px;padding:10px;overflow:auto;max-height:340px;font:12.5px/1.45 "IBM Plex Mono",monospace;white-space:pre-wrap;word-break:break-word}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+.verdict{border-left:3px solid var(--acc);padding:8px 12px;background:#0b0f14;border-radius:4px;white-space:pre-wrap}
+.probe{font:12.5px "IBM Plex Mono",monospace;padding:3px 0}.probe.b{color:var(--ok)}.probe.l{color:var(--bad)}
+img.chart{max-width:100%;border-radius:6px;background:#fff;margin-top:8px}
+table.est{width:100%;border-collapse:collapse;font-size:13px}table.est td,table.est th{padding:4px 6px;border-bottom:1px solid #1d2633;text-align:left}
+details summary{cursor:pointer;color:var(--mute);font-size:13px;margin:6px 0}
+.empty{color:var(--mute);font-size:14px;padding:20px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Triage<b>Flow</b></h1><div class="sub">Priority-aware, containment-first clinical data agents on Vultr</div></div>
+  <div class="badges" id="badges"></div>
+</header>
+<main>
+<section>
+  <div class="card">
+    <h2>New job</h2>
+    <label for="dept">Requesting department</label>
+    <select id="dept"><option>Emergency</option><option selected>ICU</option><option>General_Ward</option></select>
+    <label for="sample">Dataset (synthetic samples)</label>
+    <select id="sample"><option value="">none</option></select>
+    <label for="file">…or upload your own CSV (≤2 MB, de-identified)</label>
+    <input type="file" id="file" accept=".csv,.txt,.json">
+    <label for="task">What should the agent do?</label>
+    <textarea id="task" placeholder="e.g. Which ICU patients show deteriorating vitals in the last 6 hours? Plot their heart rate."></textarea>
+    <div class="chips" id="chips"></div>
+    <button class="primary" id="go">Plan, schedule &amp; run in sandbox</button>
+  </div>
+  <div class="card">
+    <h2>Containment moment</h2>
+    <p class="small">Launch a hostile job: it tries to steal the inference key, reach the internet, write to the host, fork-bomb, eat 2&nbsp;GB of RAM and hang forever — all inside a throwaway container.</p>
+    <button class="danger" id="redteam">Run red-team containment test</button>
+  </div>
+  <div class="card"><h2>Jobs</h2><div class="jobs" id="jobs"><div class="empty">No jobs yet</div></div></div>
+</section>
+<section>
+  <div class="card"><h2>Sandbox pools — thesis Local / Edge / Cloud model</h2><div class="pools" id="pools"></div>
+    <p class="small">Each department has its own edge sandbox pool; large jobs and overflow go to the shared Cloud pool. Inside a pool jobs are served Critical-first, then earliest deadline.</p></div>
+  <div class="card" id="detail"><div class="empty">Submit a job or select one to see the agent plan, sandbox runs and verified output.</div></div>
+</section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let selected = null, lastKey = "";
+const examples = [
+  ["ICU deterioration", "ICU", "icu_vitals_synthetic.csv", "URGENT: which ICU patients show deteriorating vitals (rising heart rate and lactate, falling SpO2) over the last 6 hours? List patient_ids with their latest values and plot heart rate for the flagged patients."],
+  ["ER wait times", "Emergency", "er_visits_synthetic.csv", "Average wait time per triage level and per arrival hour; chart wait minutes by triage level."],
+  ["Ward weekly report", "General_Ward", "ward_census_synthetic.csv", "Weekly summary of admissions, discharges and bed occupancy; plot occupied beds over time."],
+];
+async function api(path, opts) { const r = await fetch(path, opts); if (!r.ok) throw new Error(await r.text()); return r.json(); }
+
+async function init() {
+  const h = await api("/api/health");
+  $("#badges").innerHTML =
+    `<span class="badge ${h.llm_mode==="vultr"?"on":"warn"}">LLM: ${h.llm_mode==="vultr"?"Vultr Serverless Inference · "+esc(h.model):"offline mock"}</span>` +
+    `<span class="badge ${h.docker?"on":"warn"}">sandbox: ${h.docker?"docker ("+esc(h.runtime)+")":"unavailable"}</span>` +
+    `<span class="badge">net: none · non-root · read-only</span>`;
+  const s = await api("/api/samples");
+  $("#sample").innerHTML += s.map(n => `<option>${esc(n)}</option>`).join("");
+  $("#chips").innerHTML = examples.map((e,i) => `<span class="chip" data-i="${i}">${esc(e[0])}</span>`).join("");
+  $("#chips").onclick = ev => { const e = examples[ev.target.dataset.i]; if (!e) return;
+    $("#dept").value = e[1]; $("#sample").value = e[2]; $("#task").value = e[3]; };
+  refresh(); setInterval(refresh, 1500);
+}
+$("#go").onclick = async () => {
+  const fd = new FormData();
+  fd.append("task", $("#task").value); fd.append("department", $("#dept").value); fd.append("sample", $("#sample").value);
+  if ($("#file").files[0]) fd.append("file", $("#file").files[0]);
+  try { const j = await api("/api/jobs", {method:"POST", body: fd}); selected = j.id; refresh(); }
+  catch (e) { alert(e.message); }
+};
+$("#redteam").onclick = async () => { const j = await api("/api/containment-test", {method:"POST"}); selected = j.id; refresh(); };
+
+async function refresh() {
+  const [pools, jobs] = await Promise.all([api("/api/pools"), api("/api/jobs")]);
+  $("#pools").innerHTML = Object.entries(pools).map(([n,p]) =>
+    `<div class="pool"><b>${esc(n.replace("_"," "))}</b><div class="slots">${Array.from({length:p.capacity},(_,i)=>`<div class="slot ${i<p.running?"busy":""}"></div>`).join("")}</div>
+     <div class="small mono">${p.running}/${p.capacity} running · ${p.queued} queued</div></div>`).join("");
+  $("#jobs").innerHTML = jobs.length ? jobs.map(j => `<div class="job ${j.id===selected?"sel":""}" data-id="${j.id}">
+     <span class="pri ${j.kind==="containment_test"?"Critical":esc(j.priority)}">${esc(j.kind==="containment_test"?"RED":(j.priority||"…"))}</span>
+     <span class="small">${esc(j.task).slice(0,70)}</span><span class="status ${esc(j.status)}">${esc(j.status)}</span></div>`).join("")
+    : `<div class="empty">No jobs yet</div>`;
+  document.querySelectorAll(".job").forEach(el => el.onclick = () => { selected = el.dataset.id; refresh(); });
+  if (selected) { const d = await api("/api/jobs/" + selected);
+    const key = JSON.stringify([d.id, d.status, d.events.length, d.attempts.length, !!d.explanation]);
+    if (key !== lastKey) { lastKey = key; renderDetail(d); } }
+}
+
+function renderDetail(j) {
+  const last = j.attempts.length ? j.attempts[j.attempts.length-1].result : null;
+  let html = `<h2>Job ${esc(j.id)} · ${esc(j.department)}</h2>
+  <p>${esc(j.task)}</p>
+  <div class="grid2"><div>
+    <div class="small">Triage agent</div>
+    <p><span class="pri ${esc(j.priority)}">${esc(j.priority||"…")}</span> <span class="mono small">size: ${esc(j.size||"…")}</span><br><span class="small">${esc(j.triage_reason||"")}</span></p>
+    <div class="small">Scheduler (thesis ECT rule)</div>
+    ${j.route_estimates ? `<table class="est"><tr><th>Tier</th><th>Pool</th><th>Est. finish</th></tr>${Object.entries(j.route_estimates).map(([t,e]) =>
+      `<tr${t===j.tier?' style="color:var(--acc);font-weight:600"':''}><td>${t}</td><td>${esc(e.pool)}</td><td class="mono">${e.est_s}s</td></tr>`).join("")}</table>
+      <p class="small">${esc(j.route_reason)}</p>` : `<p class="small">routing…</p>`}
+    ${j.met_deadline!==undefined && j.met_deadline!==null ? `<p class="small">Deadline: <b style="color:${j.met_deadline?"var(--ok)":"var(--bad)"}">${j.met_deadline?"met":"missed"}</b></p>`:""}
+  </div><div>
+    <div class="small">Timeline</div>
+    <ul class="timeline">${j.events.map(e => `<li><span class="t mono">+${e.t}s</span><span class="s">${esc(e.stage)}</span><span class="small">${esc(e.detail)}</span></li>`).join("")}</ul>
+  </div></div>`;
+  if (j.explanation) html += `<h2 style="margin-top:14px">${j.kind==="containment_test"?"Containment result":"Verifier agent"}</h2><div class="verdict">${esc(j.explanation)}</div>`;
+  if (last && j.kind==="containment_test") {
+    html += `<div style="margin-top:10px">${last.stdout.split("\n").filter(l=>/^(BLOCKED|LEAKED)/.test(l)).map(l=>`<div class="probe ${l.startsWith("BLOCKED")?"b":"l"}">${esc(l)}</div>`).join("")}</div>`;
+  }
+  if (last && last.artifacts) html += last.artifacts.map(a => `<img class="chart" alt="${esc(a.name)}" src="data:image/png;base64,${a.b64}">`).join("");
+  j.attempts.forEach(a => {
+    const r = a.result;
+    html += `<details ${a===j.attempts[j.attempts.length-1]?"open":""}><summary>Sandbox attempt ${a.attempt} · ${esc(r.run_id)} · exit ${r.exit_code} · ${r.duration_s}s · ${r.timed_out?"KILLED (time limit)":r.ok?"ok":"error"} · destroyed: ${r.container_destroyed}</summary>
+      <div class="grid2"><div><div class="small">Code written by the coder agent</div><pre>${esc(a.code)}</pre></div>
+      <div><div class="small">Real stdout / stderr</div><pre>${esc(r.stdout)}${r.stderr?"\n--- stderr ---\n"+esc(r.stderr):""}</pre>
+      <div class="small">Limits: ${r.limits.memory_mb} MB · ${r.limits.cpus} CPU · ${r.limits.pids} PIDs · ${r.limits.timeout_s}s</div>
+      <pre class="small">docker run ${esc(r.docker_flags.join(" "))}</pre></div></div></details>`;
+  });
+  $("#detail").innerHTML = html;
+}
+init();
+</script>
+</body>
+</html>
