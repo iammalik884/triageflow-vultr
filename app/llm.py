@@ -58,7 +58,11 @@ def list_models() -> list:
 
 def _extract_code(text: str) -> str:
     m = re.search(r"```(?:python|py)?\s*\n(.*?)```", text, re.S)
-    return (m.group(1) if m else text).strip()
+    if m:
+        return m.group(1).strip()
+    # Truncated reply: opening fence but no closing fence -> strip the fence line.
+    text = re.sub(r"^\s*```(?:python|py)?\s*\n?", "", text)
+    return text.replace("```", "").strip()
 
 
 def _extract_json(text: str) -> dict:
@@ -101,6 +105,8 @@ Available libraries: Python standard library, pandas, numpy, matplotlib (Agg bac
 Input files are in /work/data/ (read-only). Save any chart as a PNG in /out/ (e.g. /out/chart.png).
 Print the key results clearly to stdout (they will be checked and explained to a clinician).
 Do not invent data: compute everything from the files. Keep it short and robust.
+Use the column types shown in the file description: integer columns such as `day` or `hour`
+are counters (day 1, day 2, ...), NOT dates - never pass them to pd.to_datetime.
 Reply with ONLY the code in one ```python block."""
 
 
@@ -113,7 +119,13 @@ def write_code(task: str, data_info: str, previous: list) -> str:
     for p in previous:
         messages.append({"role": "assistant", "content": f"```python\n{p['code']}\n```"})
         messages.append({"role": "user", "content": f"The sandbox run FAILED:\n{p['error'][-2500:]}\nFix the script. Reply with the full corrected code only."})
-    return _extract_code(_chat(messages, max_tokens=1600))
+    # Reasoning models can spend the whole budget before writing code -> empty reply.
+    # Give a bigger budget and ask once more if the reply is still empty.
+    for _ in range(2):
+        code = _extract_code(_chat(messages, max_tokens=4000))
+        if code:
+            return code
+    return ""
 
 
 # ---------------------------------------------------------------- verifier

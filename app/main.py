@@ -79,12 +79,22 @@ def _execute(job_id: str):
             job["attempts"].append({"attempt": attempt, "code": code, "result": res.to_dict()})
             _event(job, "sandbox_done",
                     f"exit {res.exit_code}, {res.duration_s}s, timed_out={res.timed_out}, container destroyed={res.container_destroyed}")
-            if res.ok or job["kind"] == "containment_test":
+            if job["kind"] == "containment_test":
                 break
-            previous.append({"code": code, "error": (res.stderr or res.stdout)[-2500:]})
+            if res.ok and not code.strip():
+                error = "The coder agent returned NO code. Write the full Python script."
+            elif res.ok and not res.stdout.strip():
+                error = "The script ran but printed NOTHING to stdout. Print the key results."
+            elif res.ok:
+                break
+            else:
+                error = (res.stderr or res.stdout)[-2500:]
+            previous.append({"code": code or "# (empty)", "error": error})
             if attempt < MAX_ATTEMPTS:
                 _event(job, "self_healing", "error fed back to the coder agent")
         last = job["attempts"][-1]["result"]
+        if job["kind"] != "containment_test" and not last["stdout"].strip():
+            last["ok"] = False  # empty output is never a success
         if job["kind"] == "containment_test":
             job["explanation"] = _containment_summary(last)
         elif last["ok"]:
@@ -94,8 +104,15 @@ def _execute(job_id: str):
             job["explanation"] = f"Failed after {MAX_ATTEMPTS} sandboxed attempts. Last error:\n{last['stderr'][-800:]}"
         job["finished"] = time.time()
         job["met_deadline"] = job["finished"] <= job["deadline"]
-        _event(job, "done" if (last["ok"] or job["kind"] == "containment_test") else "failed",
-                f"deadline {'met' if job['met_deadline'] else 'MISSED'}")
+        if job["kind"] == "containment_test":
+            final = "done"
+        elif not last["ok"]:
+            final = "failed"
+        elif "NOT VERIFIED" in job["explanation"].upper():
+            final = "needs_review"  # ran, but the verifier rejected the answer
+        else:
+            final = "done"
+        _event(job, final, f"deadline {'met' if job['met_deadline'] else 'MISSED'}")
     except Exception as e:  # noqa: BLE001
         _event(job, "failed", f"error: {e}")
     finally:
@@ -120,8 +137,10 @@ def _start_workers():
 def _new_job(kind: str, task: str, department: str, files: dict) -> dict:
     job_id = uuid.uuid4().hex[:10]
     def _describe(name, blob):
-        header = blob.split(b"\n", 1)[0][:200].decode(errors="replace")
-        return f"{name} ({len(blob) // 1024 or 1} KB, header: {header})"
+        lines = blob.split(b"\n", 3)
+        header = lines[0][:200].decode(errors="replace")
+        sample = " | ".join(l[:200].decode(errors="replace") for l in lines[1:3] if l.strip())
+        return f"{name} ({len(blob) // 1024 or 1} KB, header: {header}; first rows: {sample})"
     info = ", ".join(_describe(n, b) for n, b in files.items()) or "no files"
     job = {"id": job_id, "kind": kind, "task": task, "department": department, "files": files,
            "data_info": info, "submitted": time.time(), "events": [], "attempts": [], "status": "submitted",
