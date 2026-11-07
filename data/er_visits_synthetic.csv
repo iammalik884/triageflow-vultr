@@ -1,0 +1,151 @@
+visit_id,arrival_hour,triage_level,wait_minutes,chief_complaint,admitted
+ER-1000,5,4,101,abdominal pain,0
+ER-1001,1,4,37,injury,0
+ER-1002,1,4,67,breathing,1
+ER-1003,9,5,27,headache,0
+ER-1004,15,2,15,breathing,0
+ER-1005,13,4,32,abdominal pain,1
+ER-1006,22,4,62,abdominal pain,0
+ER-1007,10,5,9,abdominal pain,0
+ER-1008,19,1,76,injury,0
+ER-1009,9,4,12,chest pain,0
+ER-1010,14,3,45,fever,0
+ER-1011,17,3,60,breathing,0
+ER-1012,23,3,74,fever,1
+ER-1013,6,3,1,headache,0
+ER-1014,10,4,37,abdominal pain,1
+ER-1015,20,4,23,breathing,0
+ER-1016,5,3,73,breathing,0
+ER-1017,7,4,99,headache,0
+ER-1018,20,4,14,chest pain,0
+ER-1019,17,3,62,fever,1
+ER-1020,15,3,89,fever,0
+ER-1021,22,3,29,abdominal pain,0
+ER-1022,3,5,42,breathing,0
+ER-1023,7,4,40,abdominal pain,0
+ER-1024,6,3,29,headache,1
+ER-1025,16,4,26,chest pain,0
+ER-1026,10,2,43,injury,0
+ER-1027,17,3,54,chest pain,0
+ER-1028,20,3,107,headache,0
+ER-1029,20,3,99,fever,1
+ER-1030,18,2,82,injury,0
+ER-1031,19,5,49,breathing,0
+ER-1032,4,3,33,headache,0
+ER-1033,3,5,12,breathing,0
+ER-1034,10,3,16,abdominal pain,1
+ER-1035,20,2,47,fever,0
+ER-1036,15,3,1,chest pain,0
+ER-1037,7,3,74,abdominal pain,0
+ER-1038,10,2,91,chest pain,0
+ER-1039,9,4,25,headache,0
+ER-1040,10,4,6,abdominal pain,1
+ER-1041,14,4,42,fever,0
+ER-1042,14,5,46,chest pain,0
+ER-1043,5,3,11,breathing,0
+ER-1044,6,2,99,abdominal pain,0
+ER-1045,18,2,6,chest pain,0
+ER-1046,2,2,47,abdominal pain,0
+ER-1047,9,3,7,fever,1
+ER-1048,22,4,40,injury,0
+ER-1049,7,4,30,headache,1
+ER-1050,2,3,3,fever,1
+ER-1051,6,4,52,abdominal pain,1
+ER-1052,19,4,52,abdominal pain,0
+ER-1053,7,3,96,fever,0
+ER-1054,3,2,39,chest pain,0
+ER-1055,18,4,73,breathing,1
+ER-1056,4,2,55,abdominal pain,0
+ER-1057,16,2,49,chest pain,0
+ER-1058,16,3,22,injury,0
+ER-1059,6,5,56,breathing,0
+ER-1060,5,3,70,headache,0
+ER-1061,3,3,88,breathing,0
+ER-1062,20,3,37,chest pain,0
+ER-1063,16,1,88,abdominal pain,0
+ER-1064,3,3,22,chest pain,0
+ER-1065,2,5,48,breathing,0
+ER-1066,21,2,3,chest pain,0
+ER-1067,7,4,63,headache,0
+ER-1068,6,3,96,abdominal pain,0
+ER-1069,20,3,55,breathing,1
+ER-1070,8,5,7,fever,0
+ER-1071,18,2,23,injury,0
+ER-1072,16,4,102,breathing,1
+ER-1073,19,3,92,breathing,0
+ER-1074,23,3,36,abdominal pain,0
+ER-1075,4,3,13,abdominal pain,0
+ER-1076,7,4,80,abdominal pain,0
+ER-1077,12,5,38,injury,0
+ER-1078,12,3,74,abdominal pain,1
+ER-1079,1,4,52,headache,1
+ER-1080,23,4,32,breathing,0
+ER-1081,7,5,46,injury,0
+ER-1082,4,2,29,injury,0
+ER-1083,8,5,64,abdominal pain,0
+ER-1084,20,5,17,fever,1
+ER-1085,14,4,16,headache,0
+ER-1086,14,3,79,breathing,0
+ER-1087,12,2,61,headache,0
+ER-1088,6,2,70,fever,0
+ER-1089,17,2,83,fever,0
+ER-1090,8,3,11,chest pain,1
+ER-1091,8,5,0,fever,0
+ER-1092,22,4,23,fever,1
+ER-1093,20,5,45,injury,0
+ER-1094,9,5,18,chest pain,0
+ER-1095,19,3,35,fever,0
+ER-1096,21,3,66,injury,1
+ER-1097,13,5,47,fever,0
+ER-1098,8,3,20,abdominal pain,1
+ER-1099,3,4,3,abdominal pain,0
+ER-1100,9,5,15,headache,0
+ER-1101,10,5,36,fever,0
+ER-1102,9,5,12,fever,0
+ER-1103,11,2,49,chest pain,1
+ER-1104,16,2,65,injury,1
+ER-1105,11,5,74,injury,0
+ER-1106,22,1,20,headache,0
+ER-1107,20,4,74,abdominal pain,1
+ER-1108,12,4,40,abdominal pain,1
+ER-1109,3,2,101,breathing,0
+ER-1110,15,2,80,abdominal pain,1
+ER-1111,10,4,32,abdominal pain,0
+ER-1112,2,3,87,abdominal pain,0
+ER-1113,23,3,91,headache,1
+ER-1114,20,3,21,abdominal pain,0
+ER-1115,8,3,2,chest pain,0
+ER-1116,11,3,64,fever,1
+ER-1117,7,3,53,headache,0
+ER-1118,5,3,35,abdominal pain,0
+ER-1119,17,1,75,fever,0
+ER-1120,23,2,39,injury,0
+ER-1121,14,5,64,fever,0
+ER-1122,23,3,32,abdominal pain,0
+ER-1123,20,4,68,chest pain,1
+ER-1124,15,3,74,abdominal pain,0
+ER-1125,7,4,78,headache,0
+ER-1126,21,5,22,headache,0
+ER-1127,17,3,28,injury,0
+ER-1128,17,2,47,chest pain,1
+ER-1129,17,5,53,fever,0
+ER-1130,13,3,28,chest pain,0
+ER-1131,22,4,44,chest pain,0
+ER-1132,10,2,39,fever,0
+ER-1133,9,5,24,headache,0
+ER-1134,10,3,36,fever,0
+ER-1135,6,4,33,injury,0
+ER-1136,4,4,39,fever,0
+ER-1137,5,3,56,injury,0
+ER-1138,23,4,35,abdominal pain,1
+ER-1139,17,5,129,breathing,1
+ER-1140,22,5,58,breathing,0
+ER-1141,14,5,63,fever,0
+ER-1142,2,3,88,injury,0
+ER-1143,6,3,93,headache,0
+ER-1144,7,3,50,breathing,0
+ER-1145,16,3,60,fever,0
+ER-1146,7,3,36,fever,1
+ER-1147,23,4,36,injury,0
+ER-1148,21,2,72,abdominal pain,0
+ER-1149,15,2,4,abdominal pain,0
