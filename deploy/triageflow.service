@@ -1,0 +1,13 @@
+[Unit]
+Description=TriageFlow control layer (FastAPI) - dispatches agent code to Docker sandboxes
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=__APP_DIR__
+EnvironmentFile=/etc/triageflow.env
+ExecStart=__APP_DIR__/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 80
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
